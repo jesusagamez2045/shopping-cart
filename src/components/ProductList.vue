@@ -27,7 +27,7 @@ const onAddToCard = (product: Product) => {
 <template>
   <DataView :value="products" :layout="layout" data-key="id">
     <template #header>
-      <div class="flex justify-content-between align-items-center">
+      <div class="flex flex-wrap justify-content-between align-items-center">
         <slot name="tableHeader"></slot>
         <DataViewLayoutOptions v-model="layout" />
       </div>

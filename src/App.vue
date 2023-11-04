@@ -64,7 +64,7 @@ const getAllProducts = async () => {
     toast.add({
       severity: 'error',
       summary: 'Error',
-      detail: 'Ha ocurrido un error al cargar los productos',
+      detail: 'an error occurred while loading products',
       life: 3000,
     });
     throw error;
@@ -78,7 +78,7 @@ const getAllCategories = async () => {
     toast.add({
       severity: 'error',
       summary: 'Error',
-      detail: 'Ha ocurrido un error al cargar las categorías',
+      detail: 'an error occurred while loading categories',
       life: 3000,
     });
     throw error;
@@ -93,6 +93,12 @@ const getAllData = async () => {
 
 const onClickAddToCardProduct = (product: Product) => {
   addProductToCart(product);
+  toast.add({
+    severity: 'success',
+    summary: 'Success',
+    detail: 'product has been added to your cart',
+    life: 3000,
+  });
 };
 
 const showCart = () => {
@@ -116,7 +122,7 @@ onMounted(() => {
     @on-add-product-to-card="onClickAddToCardProduct"
   >
     <template #tableHeader>
-      <div class="flex gap-2">
+      <div class="flex flex-wrap gap-2 pb-2 md:pb-0">
         <SearchProduct
           v-model="searchProductValue"
           placeholder="Search product"
