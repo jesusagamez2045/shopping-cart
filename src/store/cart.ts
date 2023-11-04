@@ -22,7 +22,7 @@ export const useCartStore = defineStore('cart', () => {
     return cartProducts.value.length;
   });
 
-  const addProductToCart = (product: Product) => {
+  const addProductToCart = (product: Product | ProductCart) => {
     const existItem = cartProducts.value.find(
       (productItem) => productItem.id === product.id
     );
@@ -32,6 +32,17 @@ export const useCartStore = defineStore('cart', () => {
       cartProducts.value.push({ ...product, quantity: 1 });
     }
   };
+
+  const decreaseProductQuantity = (id: number)  => {
+    const existItem = cartProducts.value.find(
+      (productItem) => productItem.id === id
+    );
+
+    if(!existItem) return
+    if(existItem.quantity === 0) return
+
+    existItem.quantity -= 1;
+  }
 
   const removeProductToCart = (id: number) => {
     const itemIndex = cartProducts.value.findIndex(
@@ -55,5 +66,6 @@ export const useCartStore = defineStore('cart', () => {
     cartTotal,
     cartQuantity,
     cartFormattedTotal,
+    decreaseProductQuantity,
   };
 });

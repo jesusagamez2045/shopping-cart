@@ -10,6 +10,7 @@ import ProductGridItem from '@/components/ProductGridItem.vue';
 
 type Props = {
   products: Product[];
+  isLoading?: boolean;
 };
 
 defineProps<Props>();
@@ -26,7 +27,8 @@ const onAddToCard = (product: Product) => {
 <template>
   <DataView :value="products" :layout="layout" data-key="id">
     <template #header>
-      <div class="flex justify-content-end">
+      <div class="flex justify-content-between align-items-center">
+        <slot name="tableHeader"></slot>
         <DataViewLayoutOptions v-model="layout" />
       </div>
     </template>
@@ -34,6 +36,7 @@ const onAddToCard = (product: Product) => {
       <div class="col-12">
         <ProducListItem
           :product="slotProps.data"
+          :is-loading="isLoading"
           @on-add-to-card="onAddToCard(slotProps.data)"
         />
       </div>
@@ -42,6 +45,7 @@ const onAddToCard = (product: Product) => {
       <div class="col-12 sm:col-6 lg:col-6 xl:col-4 p-2">
         <ProductGridItem
           :product="slotProps.data"
+          :is-loading="isLoading"
           @on-add-to-card="onAddToCard(slotProps.data)"
         />
       </div>

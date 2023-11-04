@@ -1,7 +1,9 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { useToast } from 'primevue/usetoast';
+import { storeToRefs } from 'pinia';
 import Toast from 'primevue/toast';
+import Button from 'primevue/button';
 
 import useProduct from '@/composables/http/useProduct';
 import useCategory from '@/composables/http/useCategory';
@@ -11,6 +13,9 @@ import { useCartStore } from '@/store/cart';
 import { Product } from '@/types/domain/Product';
 
 import ProductList from '@/components/ProductList.vue';
+import ProductCard from '@/components/ProductCard.vue';
+import SearchProduct from '@/components/SearchProduct.vue';
+import CategoryFilter from '@/components/CategoryFilter.vue';
 
 const toast = useToast();
 const { getProducts } = useProduct();
@@ -18,10 +23,39 @@ const { getCategories } = useCategory();
 
 const cartStore = useCartStore();
 const { addProductToCart } = cartStore;
+const { cartQuantity } = storeToRefs(cartStore);
 
 const products = ref<Product[]>([]);
 const categories = ref<string[]>([]);
 const isLoading = ref(false);
+const isProductCardOpen = ref(false);
+const searchProductValue = ref('');
+const selectedCategory = ref('');
+
+const filteredProducts = computed<Product[]>(() => {
+  const filterByName = (product: Product) =>
+    product.title
+      .toLowerCase()
+      .includes(searchProductValue.value.toLowerCase());
+
+  const filterByCategory = (product: Product) =>
+    product.category.toLowerCase() === selectedCategory.value.toLowerCase();
+
+  return products.value.filter(
+    (product) =>
+      filterByName(product) &&
+      (!selectedCategory.value || filterByCategory(product))
+  );
+});
+
+const clearFilters = () => {
+  searchProductValue.value = '';
+  selectedCategory.value = '';
+};
+
+const onChangeCategory = (value: string) => {
+  selectedCategory.value = value ?? '';
+};
 
 const getAllProducts = async () => {
   try {
@@ -61,6 +95,14 @@ const onClickAddToCardProduct = (product: Product) => {
   addProductToCart(product);
 };
 
+const showCart = () => {
+  isProductCardOpen.value = true;
+};
+
+const hideCart = () => {
+  isProductCardOpen.value = false;
+};
+
 onMounted(() => {
   getAllData();
 });
@@ -69,7 +111,36 @@ onMounted(() => {
 <template>
   <Toast />
   <ProductList
-    :products="products"
+    :products="filteredProducts"
+    :is-loading="isLoading"
     @on-add-product-to-card="onClickAddToCardProduct"
-  />
+  >
+    <template #tableHeader>
+      <div class="flex gap-2">
+        <SearchProduct
+          v-model="searchProductValue"
+          placeholder="Search product"
+        />
+        <CategoryFilter
+          :value="selectedCategory"
+          placeholder="Select a category"
+          class="w-15rem"
+          :categories="categories"
+          @on-change-value="onChangeCategory"
+        />
+        <Button
+          icon="pi pi-times"
+          title="Clear filters"
+          @click="clearFilters"
+        />
+        <Button
+          icon="pi pi-shopping-cart"
+          title="Show Cart"
+          :badge="cartQuantity.toString()"
+          @click="showCart"
+        />
+      </div>
+    </template>
+  </ProductList>
+  <ProductCard :is-open="isProductCardOpen" @on-close-modal="hideCart" />
 </template>
