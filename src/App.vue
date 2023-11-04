@@ -13,7 +13,7 @@ import { useCartStore } from '@/store/cart';
 import { Product } from '@/types/domain/Product';
 
 import ProductList from '@/components/ProductList.vue';
-import ProductCard from '@/components/ProductCard.vue';
+import ProductCart from '@/components/ProductCart.vue';
 import SearchProduct from '@/components/SearchProduct.vue';
 import CategoryFilter from '@/components/CategoryFilter.vue';
 
@@ -148,5 +148,5 @@ onMounted(() => {
       </div>
     </template>
   </ProductList>
-  <ProductCard :is-open="isProductCardOpen" @on-close-modal="hideCart" />
+  <ProductCart :is-open="isProductCardOpen" @on-close-modal="hideCart" />
 </template>
