@@ -57,16 +57,24 @@ const onChangeCategory = (value: string) => {
   selectedCategory.value = value ?? '';
 };
 
+const showToast = (
+  severity: 'success' | 'info' | 'warn' | 'error',
+  summary: string,
+  detail: string
+) => {
+  toast.add({
+    severity,
+    summary,
+    detail,
+    life: 3000,
+  });
+};
+
 const getAllProducts = async () => {
   try {
     products.value = await getProducts();
   } catch (error) {
-    toast.add({
-      severity: 'error',
-      summary: 'Error',
-      detail: 'an error occurred while loading products',
-      life: 3000,
-    });
+    showToast('error', 'Error', 'an error occurred while loading products');
     throw error;
   }
 };
@@ -75,12 +83,7 @@ const getAllCategories = async () => {
   try {
     categories.value = await getCategories();
   } catch (error) {
-    toast.add({
-      severity: 'error',
-      summary: 'Error',
-      detail: 'an error occurred while loading categories',
-      life: 3000,
-    });
+    showToast('error', 'Error', 'an error occurred while loading categories');
     throw error;
   }
 };
@@ -93,12 +96,7 @@ const getAllData = async () => {
 
 const onClickAddToCardProduct = (product: Product) => {
   addProductToCart(product);
-  toast.add({
-    severity: 'success',
-    summary: 'Success',
-    detail: 'product has been added to your cart',
-    life: 3000,
-  });
+  showToast('success', 'Success', 'product has been added to your cart');
 };
 
 const showCart = () => {
